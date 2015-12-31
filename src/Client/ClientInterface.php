@@ -3,6 +3,9 @@
 namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\Request;
+use GuzzleHttp\Event\SubscriberInterface;
+use GuzzleHttp\Message\RequestInterface;
+use GuzzleHttp\Message\ResponseInterface;
 
 /**
  * Http client interface
@@ -14,16 +17,21 @@ interface ClientInterface
     /**
      * Create request to send
      *
-     * @param \Assertis\Http\Request\Request $request
-     * @return mixed
+     * @param Request $request
+     * @return RequestInterface
      */
     public function createRequest(Request $request);
 
     /**
      * Method send request for api
      *
-     * @param \Assertis\Http\Request\Request $request
-     * @return mixed
+     * @param Request $request
+     * @return ResponseInterface
      */
     public function send(Request $request);
+
+    /**
+     * @param SubscriberInterface $subscriber
+     */
+    public function attachSubscriber(SubscriberInterface $subscriber);
 }

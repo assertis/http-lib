@@ -6,6 +6,7 @@ use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
 use Exception;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
@@ -93,5 +94,13 @@ class Client implements ClientInterface
     public function getGuzzleClient()
     {
         return $this->guzzleClient;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attachSubscriber(SubscriberInterface $subscriber)
+    {
+        $this->guzzleClient->getEmitter()->attach($subscriber);
     }
 }
