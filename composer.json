@@ -1,0 +1,28 @@
+{
+  "name": "assertis/http-lib",
+  "description": "Guzzle-based HTTP helper library.",
+  "licence": "proprietary",
+  "authors": [
+    {
+      "name": "Michał Tatarynowicz",
+      "email": "michal.tatarynowicz@assertis.co.uk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {"Assertis\\Http\\": "src"}
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/assertis/ride-lib"
+    }
+  ],
+  "require": {
+    "php": "^5.5.0",
+    "guzzlehttp/guzzle": "^5.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^4.8",
+    "symfony/var-dumper": "^2.7"
+  }
+}
