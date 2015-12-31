@@ -2,7 +2,7 @@
 
 namespace Assertis\Http\Client;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use Memcache;
 
 /**
@@ -58,7 +58,7 @@ class ClientFactory
             $params['defaults']['auth'] = $auth;
         }
 
-        $client = new Client($params);
+        $client = new GuzzleClient($params);
 
         return $isCached ?
             new ClientCached($client, $this->memcache) :
