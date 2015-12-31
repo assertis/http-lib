@@ -32,9 +32,7 @@ class ClientFactory
      * @param bool $isCached
      * @param int $connectTimeout
      * @param int $requestTimeout
-     * @param string $authenticationType
-     * @param string $login
-     * @param string $password
+     * @param array $auth
      * @return ClientInterface
      */
     public function getClient(
@@ -43,9 +41,7 @@ class ClientFactory
         $isCached,
         $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT,
         $requestTimeout = self::DEFAULT_REQUEST_TIMEOUT,
-        $authenticationType = null,
-        $login = null,
-        $password = null
+        array $auth = null
     ) {
         $params = [
             'base_url' => $baseUrl,
@@ -58,12 +54,8 @@ class ClientFactory
             ],
         ];
 
-        if ($authenticationType) {
-            $params['defaults']['auth'] = [
-                $login,
-                $password,
-                $authenticationType,
-            ];
+        if ($auth) {
+            $params['defaults']['auth'] = $auth;
         }
 
         $client = new Client($params);
