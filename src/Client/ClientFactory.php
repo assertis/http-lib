@@ -33,6 +33,7 @@ class ClientFactory
      * @param int $connectTimeout
      * @param int $requestTimeout
      * @param array $auth
+     * @param string|null $tenant
      * @return ClientInterface
      */
     public function getClient(
@@ -41,7 +42,8 @@ class ClientFactory
         $isCached,
         $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT,
         $requestTimeout = self::DEFAULT_REQUEST_TIMEOUT,
-        array $auth = null
+        array $auth = null,
+        $tenant = null
     ) {
         $params = [
             'base_url' => $baseUrl,
@@ -56,6 +58,10 @@ class ClientFactory
 
         if ($auth) {
             $params['defaults']['auth'] = $auth;
+        }
+        
+        if ($tenant) {
+            $params['defaults']['headers']['X-TENANT'] = $tenant;
         }
 
         $client = new GuzzleClient($params);
