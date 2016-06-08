@@ -5,7 +5,7 @@ namespace Assertis\Http\Client;
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
 use Exception;
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
@@ -22,14 +22,14 @@ class Client implements ClientInterface
     /**
      * Http client
      *
-     * @var GuzzleClient
+     * @var GuzzleClientInterface
      */
     protected $guzzleClient;
 
     /**
-     * @param GuzzleClient $http
+     * @param GuzzleClientInterface $http
      */
-    public function __construct(GuzzleClient $http)
+    public function __construct(GuzzleClientInterface $http)
     {
         $this->guzzleClient = $http;
     }
@@ -89,7 +89,7 @@ class Client implements ClientInterface
     }
 
     /**
-     * @return GuzzleClient
+     * @return GuzzleClientInterface
      */
     public function getGuzzleClient()
     {
