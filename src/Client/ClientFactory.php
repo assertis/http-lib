@@ -3,6 +3,7 @@
 namespace Assertis\Http\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
+use InvalidArgumentException;
 use Memcache;
 
 /**
@@ -14,14 +15,14 @@ class ClientFactory
     const DEFAULT_REQUEST_TIMEOUT = 10;
 
     /**
-     * @var Memcache
+     * @var Memcache|null
      */
     private $memcache;
 
     /**
      * @param Memcache $memcache
      */
-    public function __construct(Memcache $memcache)
+    public function __construct(Memcache $memcache = null)
     {
         $this->memcache = $memcache;
     }
@@ -65,6 +66,10 @@ class ClientFactory
         }
 
         $client = new GuzzleClient($params);
+
+        if ($isCached && empty($this->memcache)) {
+            throw new InvalidArgumentException('Memcache client required but not provided.');
+        }
 
         return $isCached ?
             new ClientCached($client, $this->memcache) :
