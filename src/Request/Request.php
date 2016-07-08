@@ -14,6 +14,7 @@ class Request
      */
     const POST = 'POST';
     const GET = 'GET';
+    const PUT = 'PUT';
 
     const DEFAULT_TYPE = self::POST;
 
