@@ -11,6 +11,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Pool;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
  * Http client for nrs service
@@ -43,7 +44,7 @@ class Client implements ClientInterface
     public function createRequest(Request $request)
     {
         $settings = [
-            'body'  => $request->getBody(),
+            'body' => $request->getBody(),
             'query' => $request->getQuery(),
         ];
 
@@ -55,13 +56,24 @@ class Client implements ClientInterface
      *
      * @param \Assertis\Http\Request\Request $request
      * @return ResponseInterface
+     * @throws Exception
      */
     public function send(Request $request)
     {
         try {
             $response = $this->guzzleClient->send($this->createRequest($request));
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
+        } catch (Exception $exception) {
+            if ($exception instanceof RequestException) {
+                $response = $exception->getResponse();
+
+                if (empty($response)) {
+                    $url = $request->getUrl();
+                    throw new RuntimeException("Response from request $url was null.");
+                }
+
+            } else {
+                throw $exception;
+            }
         }
 
         return $response;
