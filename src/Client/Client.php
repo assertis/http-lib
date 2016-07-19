@@ -11,6 +11,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Pool;
+use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
  * Http client for nrs service
@@ -64,6 +65,12 @@ class Client implements ClientInterface
         } catch (Exception $exception) {
             if ($exception instanceof RequestException) {
                 $response = $exception->getResponse();
+
+                if (empty($response)) {
+                    $url = $request->getUrl();
+                    throw new RuntimeException("Response from request $url was null.");
+                }
+
             } else {
                 throw $exception;
             }
