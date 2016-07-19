@@ -67,8 +67,7 @@ class Client implements ClientInterface
                 $response = $exception->getResponse();
 
                 if (empty($response)) {
-                    $url = $request->getUrl();
-                    throw new RuntimeException("Response from request $url was null.");
+                    throw $exception;
                 }
 
             } else {
