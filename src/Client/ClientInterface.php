@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Assertis\Http\Client;
 
+use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Message\RequestInterface;
@@ -15,22 +16,30 @@ use GuzzleHttp\Message\ResponseInterface;
 interface ClientInterface
 {
     /**
-     * Create request to send
-     *
      * @param Request $request
      * @return RequestInterface
      */
-    public function createRequest(Request $request);
+    public function createRequest(Request $request): RequestInterface;
 
     /**
-     * Method send request for api
+     * Send a single request.
      *
      * @param Request $request
      * @return ResponseInterface
      */
-    public function send(Request $request);
+    public function send(Request $request): ResponseInterface;
 
     /**
+     * Send multiple requests in parallel.
+     *
+     * @param BatchRequest $requests
+     * @return ResponseInterface[]
+     */
+    public function sendBatch(BatchRequest $requests): array;
+
+    /**
+     * Attach a subscriber that gets notified of requests.
+     *
      * @param SubscriberInterface $subscriber
      */
     public function attachSubscriber(SubscriberInterface $subscriber);

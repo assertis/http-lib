@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Assertis\Http\Client;
 
@@ -11,10 +11,9 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Pool;
-use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
- * Http client for nrs service
+ * A simplified HTTP client.
  *
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
@@ -36,15 +35,12 @@ class Client implements ClientInterface
     }
 
     /**
-     * Create request to send
-     *
-     * @param Request $request
-     * @return RequestInterface
+     * @inheritdoc
      */
-    public function createRequest(Request $request)
+    public function createRequest(Request $request): RequestInterface
     {
         $settings = [
-            'body' => $request->getBody(),
+            'body'  => $request->getBody(),
             'query' => $request->getQuery(),
         ];
 
@@ -52,13 +48,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Method send request for api
-     *
-     * @param \Assertis\Http\Request\Request $request
-     * @return ResponseInterface
-     * @throws Exception
+     * @inheritdoc
      */
-    public function send(Request $request)
+    public function send(Request $request): ResponseInterface
     {
         try {
             $response = $this->guzzleClient->send($this->createRequest($request));
@@ -79,21 +71,15 @@ class Client implements ClientInterface
     }
 
     /**
-     * Send multiple concurrent requests to the API.
-     *
-     * @param BatchRequest $batchRequest
-     * @return ResponseInterface[]
-     * @throws Exception
+     * @inheritdoc
      */
-    public function sendBatch(BatchRequest $batchRequest)
+    public function sendBatch(BatchRequest $batchRequest): array
     {
         $requests = array_map([$this, 'createRequest'], $batchRequest->getRequests());
         $batchResults = Pool::batch($this->guzzleClient, $requests);
 
         if ($batchResults->getFailures()) {
-            throw new Exception(
-                "Encountered " . count($batchResults->getFailures()) . " failures while performing a batch request."
-            );
+            throw new BatchRequestFailureException($batchRequest, $batchResults->getFailures());
         }
 
         return $batchResults->getSuccessful();

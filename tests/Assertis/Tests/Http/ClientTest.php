@@ -6,6 +6,7 @@ use Assertis\Http\Client\Client;
 use Assertis\Http\Request\Request;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Message\RequestInterface;
+use GuzzleHttp\Message\ResponseInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
@@ -82,7 +83,8 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
         $httpClient->expects($this->once())
             ->method('send')
-            ->with($this->isInstanceOf(RequestInterface::class));
+            ->with($this->isInstanceOf(RequestInterface::class))
+            ->willReturn($this->getMockForAbstractClass(ResponseInterface::class));
 
         $request = new Request('/', self::BODY);
         $client = new Client($httpClient);
