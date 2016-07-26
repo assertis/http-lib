@@ -5,7 +5,6 @@ namespace Assertis\Http\Client;
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
 use Exception;
-use GuzzleHttp\BatchResults;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -74,18 +73,16 @@ class Client implements ClientInterface
     /**
      * @inheritdoc
      */
-    public function sendBatch(BatchRequest $batchRequest): BatchResults
+    public function sendBatch(BatchRequest $batchRequest): array
     {
         $requests = array_map([$this, 'createRequest'], $batchRequest->getRequests());
         $batchResults = Pool::batch($this->guzzleClient, $requests);
 
         if ($batchResults->getFailures()) {
-            throw new Exception(
-                "Encountered " . count($batchResults->getFailures()) . " failures while performing a batch request."
-            );
+            throw new BatchRequestFailureException($batchRequest, $batchResults->getFailures());
         }
 
-        return $batchResults;
+        return $batchResults->getSuccessful();
     }
 
     /**
