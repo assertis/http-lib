@@ -5,6 +5,7 @@ namespace Assertis\Http\Client;
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
 use Exception;
+use GuzzleHttp\BatchResults;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -14,7 +15,7 @@ use GuzzleHttp\Pool;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
- * Http client for nrs service
+ * A simplified HTTP client.
  *
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
@@ -36,12 +37,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Create request to send
-     *
-     * @param Request $request
-     * @return RequestInterface
+     * @inheritdoc
      */
-    public function createRequest(Request $request)
+    private function createRequest(Request $request): RequestInterface
     {
         $settings = [
             'body' => $request->getBody(),
@@ -52,13 +50,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Method send request for api
-     *
-     * @param \Assertis\Http\Request\Request $request
-     * @return ResponseInterface
-     * @throws Exception
+     * @inheritdoc
      */
-    public function send(Request $request)
+    public function send(Request $request): ResponseInterface
     {
         try {
             $response = $this->guzzleClient->send($this->createRequest($request));
@@ -79,13 +73,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Send multiple concurrent requests to the API.
-     *
-     * @param BatchRequest $batchRequest
-     * @return ResponseInterface[]
-     * @throws Exception
+     * @inheritdoc
      */
-    public function sendBatch(BatchRequest $batchRequest)
+    public function sendBatch(BatchRequest $batchRequest): BatchResults
     {
         $requests = array_map([$this, 'createRequest'], $batchRequest->getRequests());
         $batchResults = Pool::batch($this->guzzleClient, $requests);
@@ -96,7 +86,7 @@ class Client implements ClientInterface
             );
         }
 
-        return $batchResults->getSuccessful();
+        return $batchResults;
     }
 
     /**
