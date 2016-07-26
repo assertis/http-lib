@@ -6,6 +6,7 @@ use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
 use GuzzleHttp\BatchResults;
 use GuzzleHttp\Event\SubscriberInterface;
+use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 
 /**
@@ -15,6 +16,12 @@ use GuzzleHttp\Message\ResponseInterface;
  */
 interface ClientInterface
 {
+    /**
+     * @param Request $request
+     * @return RequestInterface
+     */
+    public function createRequest(Request $request): RequestInterface;
+    
     /**
      * Send a single request.
      *

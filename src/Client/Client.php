@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Assertis\Http\Client;
 
@@ -12,7 +12,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Pool;
-use Symfony\Component\Yaml\Exception\RuntimeException;
 
 /**
  * A simplified HTTP client.
@@ -39,10 +38,10 @@ class Client implements ClientInterface
     /**
      * @inheritdoc
      */
-    private function createRequest(Request $request): RequestInterface
+    public function createRequest(Request $request): RequestInterface
     {
         $settings = [
-            'body' => $request->getBody(),
+            'body'  => $request->getBody(),
             'query' => $request->getQuery(),
         ];
 
