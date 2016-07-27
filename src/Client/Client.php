@@ -79,7 +79,7 @@ class Client implements ClientInterface
         $batchResults = Pool::batch($this->guzzleClient, $requests);
 
         if ($batchResults->getFailures()) {
-            throw new BatchRequestFailureException($batchRequest, $batchResults->getFailures());
+            throw new BatchRequestFailureException($batchRequest, $batchResults);
         }
 
         return $batchResults->getSuccessful();
