@@ -14,11 +14,13 @@ class RequestTest extends PHPUnit_Framework_TestCase
     {
         $url = 'url';
         $body = 'body';
-        $request = new Request($url, $body);
+        $headers = ['X-Auth' => '123'];
+        $request = new Request($url, $body, [], Request::DEFAULT_TYPE, $headers);
 
         $this->assertEquals($url, $request->getUrl());
         $this->assertEquals($body, $request->getBody());
         $this->assertEquals(Request::DEFAULT_TYPE, $request->getType());
+        $this->assertEquals($headers, $request->getHeaders());
     }
 
     public function testSetBody()
