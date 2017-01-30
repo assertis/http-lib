@@ -47,19 +47,28 @@ class Request
     private $type;
 
     /**
+     * Headers of request
+     *
+     * @var array
+     */
+    private $headers;
+
+    /**
      * Create request to send by http
      *
      * @param string $url
      * @param string $body
      * @param array $query
      * @param string $type
+     * @param array $headers
      */
-    public function __construct($url, $body = '', array $query = [], $type = self::DEFAULT_TYPE)
+    public function __construct($url, $body = '', array $query = [], $type = self::DEFAULT_TYPE, $headers = [])
     {
         $this->url = $url;
         $this->body = $body;
         $this->query = $query;
         $this->type = $type;
+        $this->headers = $headers;
     }
 
     /**
@@ -106,5 +115,13 @@ class Request
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
     }
 }

@@ -40,8 +40,9 @@ class Client implements ClientInterface
     public function createRequest(Request $request): RequestInterface
     {
         $settings = [
-            'body'  => $request->getBody(),
-            'query' => $request->getQuery(),
+            'body'    => $request->getBody(),
+            'query'   => $request->getQuery(),
+            'headers' => $request->getHeaders(),
         ];
 
         return $this->guzzleClient->createRequest($request->getType(), $request->getUrl(), $settings);
