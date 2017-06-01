@@ -30,7 +30,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->guzzleClient = new GuzzleClient([
-            'base_url' => 'http://test/',
+            'base_uri' => 'http://test/',
         ]);
         $this->client = new Client($this->guzzleClient);
     }
@@ -79,7 +79,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
         $httpClient
             ->method('getConfig')
-            ->with('base_url')
+            ->with('base_uri')
             ->willReturn("http://test");
 
         $request = new Request('/', self::BODY);

@@ -55,7 +55,7 @@ class CachedClientTest extends PHPUnit_Framework_TestCase
     {
         $this->memcacheMock = $this->createMock(Memcached::class);
         $this->guzzleClientMock = $this->createMock(GuzzleClient::class);
-        $this->guzzleClientMock->method('getConfig')->with('base_url')->willReturn("http://test");
+        $this->guzzleClientMock->method('getConfig')->with('base_uri')->willReturn("http://test");
         $this->httpResponseMock = $this->createMock(ResponseInterface::class);
         $this->requestMock = $this->createMock(Request::class);
         $this->cachedRequestMock = $this->createMock(CachedRequest::class);

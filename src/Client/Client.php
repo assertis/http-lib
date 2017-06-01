@@ -45,12 +45,12 @@ class Client implements ClientInterface
         $body = $request->getBody();
         $headers = $request->getHeaders();
         $query = empty($request->getQuery()) ? "" : "?".http_build_query($request->getQuery());
-        $rawBaseUrl = $this->guzzleClient->getConfig("base_url");
+        $rawBaseUrl = $this->guzzleClient->getConfig("base_uri");
         if(empty($rawBaseUrl)){
             throw new RuntimeException("Base url is not provided!");
         }
         // trimming is here to avoid issues with "/" - too much slashes or missing slashes.
-        $baseUrl = rtrim($rawBaseUrl, "/");
+        $baseUrl = rtrim((string)$rawBaseUrl, "/");
         $url = "/".ltrim($request->getUrl(),'/');
         $uri = new Uri($baseUrl . $url . $query);
 
