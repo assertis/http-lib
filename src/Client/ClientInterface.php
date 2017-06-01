@@ -4,9 +4,8 @@ namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
-use GuzzleHttp\Event\SubscriberInterface;
-use GuzzleHttp\Message\RequestInterface;
-use GuzzleHttp\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Http client interface
@@ -37,10 +36,4 @@ interface ClientInterface
      */
     public function sendBatch(BatchRequest $requests): array;
 
-    /**
-     * Attach a subscriber that gets notified of requests.
-     *
-     * @param SubscriberInterface $subscriber
-     */
-    public function attachSubscriber(SubscriberInterface $subscriber);
 }

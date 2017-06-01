@@ -19,7 +19,7 @@ use RuntimeException;
  *
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-class Client //implements ClientInterface
+class Client implements ClientInterface
 {
     /**
      * Http client
