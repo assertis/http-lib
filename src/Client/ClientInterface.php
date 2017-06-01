@@ -4,6 +4,7 @@ namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
+use Assertis\Http\Response\BatchResults;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -32,8 +33,8 @@ interface ClientInterface
      * Send multiple requests in parallel.
      *
      * @param BatchRequest $requests
-     * @return ResponseInterface[]
+     * @return BatchResults
      */
-    public function sendBatch(BatchRequest $requests): array;
+    public function sendBatch(BatchRequest $requests): BatchResults;
 
 }

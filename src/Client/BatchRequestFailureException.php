@@ -3,6 +3,7 @@
 namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
+use Assertis\Http\Response\BatchResults;
 use Exception;
 
 /**
@@ -21,11 +22,14 @@ class BatchRequestFailureException extends Exception
 
     /**
      * @param BatchRequest $batchRequest
-     * @param array $batchResults
+     * @param BatchResults $batchResults
      */
-    public function __construct(BatchRequest $batchRequest, array $batchResults)
+    public function __construct(BatchRequest $batchRequest, BatchResults $batchResults)
     {
-        $message = 'Encountered failures while performing a batch request.';
+        $message = sprintf(
+            'Encountered %d failures while performing a batch request.',
+            count($batchResults->getFailures())
+        );
         
         parent::__construct($message);
         

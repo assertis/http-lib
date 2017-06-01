@@ -4,6 +4,7 @@ namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
+use Assertis\Http\Response\BatchResults;
 use Exception;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -43,7 +44,7 @@ class Client implements ClientInterface
     {
         $body = $request->getBody();
         $headers = $request->getHeaders();
-        $query = empty($request->getQuery()) ? "" : "?{$request->getQuery()}";
+        $query = empty($request->getQuery()) ? "" : "?".http_build_query($request->getQuery());
         $rawBaseUrl = $this->guzzleClient->getConfig("base_url");
         if(empty($rawBaseUrl)){
             throw new RuntimeException("Base url is not provided!");
@@ -82,15 +83,13 @@ class Client implements ClientInterface
     /**
      * @inheritdoc
      */
-    public function sendBatch(BatchRequest $batchRequest): array
+    public function sendBatch(BatchRequest $batchRequest): BatchResults
     {
         $requests = array_map([$this, 'createRequest'], $batchRequest->getRequests());
-        $batchResults = Pool::batch($this->guzzleClient, $requests);
+        $batchResults = new BatchResults(Pool::batch($this->guzzleClient, $requests));
 
-        foreach ($batchResults as $result){
-            if($result instanceof Exception){
-                throw new BatchRequestFailureException($batchRequest, $batchResults);
-            }
+        if ($batchResults->getFailures()) {
+            throw new BatchRequestFailureException($batchRequest, $batchResults);
         }
 
         return $batchResults;

@@ -115,7 +115,7 @@ class Request
      */
     public function getQuery()
     {
-        return http_build_query($this->query);
+        return $this->query;
     }
 
     /**
