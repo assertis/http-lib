@@ -24,12 +24,11 @@ class CachedRequest extends Request
     private $cacheKey;
 
     /**
-     * Create request to send by http
-     *
+     * CachedRequest constructor.
      * @param string $url
      * @param string $body
-     * @param string $cacheKey
-     * @param int $cacheFor
+     * @param array $cacheKey
+     * @param string $cacheFor
      * @param string $type
      */
     public function __construct($url, $body, $cacheKey, $cacheFor, $type = self::DEFAULT_TYPE)

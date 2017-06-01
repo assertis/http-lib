@@ -1,16 +1,19 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
+use Assertis\Http\Response\BatchResults;
 use Exception;
 use GuzzleHttp\ClientInterface as GuzzleClientInterface;
-use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\RequestInterface;
-use GuzzleHttp\Message\ResponseInterface;
 use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 /**
  * A simplified HTTP client.
@@ -39,13 +42,19 @@ class Client implements ClientInterface
      */
     public function createRequest(Request $request): RequestInterface
     {
-        $settings = [
-            'body'    => $request->getBody(),
-            'query'   => $request->getQuery(),
-            'headers' => $request->getHeaders(),
-        ];
+        $body = $request->getBody();
+        $headers = $request->getHeaders();
+        $query = empty($request->getQuery()) ? "" : "?".http_build_query($request->getQuery());
+        $rawBaseUrl = $this->guzzleClient->getConfig("base_url");
+        if(empty($rawBaseUrl)){
+            throw new RuntimeException("Base url is not provided!");
+        }
+        // trimming is here to avoid issues with "/" - too much slashes or missing slashes.
+        $baseUrl = rtrim($rawBaseUrl, "/");
+        $url = "/".ltrim($request->getUrl(),'/');
+        $uri = new Uri($baseUrl . $url . $query);
 
-        return $this->guzzleClient->createRequest($request->getType(), $request->getUrl(), $settings);
+        return new GuzzleRequest($request->getType(), $uri, $headers, $body);
     }
 
     /**
@@ -74,16 +83,16 @@ class Client implements ClientInterface
     /**
      * @inheritdoc
      */
-    public function sendBatch(BatchRequest $batchRequest): array
+    public function sendBatch(BatchRequest $batchRequest): BatchResults
     {
         $requests = array_map([$this, 'createRequest'], $batchRequest->getRequests());
-        $batchResults = Pool::batch($this->guzzleClient, $requests);
+        $batchResults = new BatchResults(Pool::batch($this->guzzleClient, $requests));
 
         if ($batchResults->getFailures()) {
             throw new BatchRequestFailureException($batchRequest, $batchResults);
         }
 
-        return $batchResults->getSuccessful();
+        return $batchResults;
     }
 
     /**
@@ -94,11 +103,4 @@ class Client implements ClientInterface
         return $this->guzzleClient;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attachSubscriber(SubscriberInterface $subscriber)
-    {
-        $this->guzzleClient->getEmitter()->attach($subscriber);
-    }
 }

@@ -4,9 +4,9 @@ namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
 use Assertis\Http\Request\Request;
-use GuzzleHttp\Event\SubscriberInterface;
-use GuzzleHttp\Message\RequestInterface;
-use GuzzleHttp\Message\ResponseInterface;
+use Assertis\Http\Response\BatchResults;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Http client interface
@@ -33,14 +33,8 @@ interface ClientInterface
      * Send multiple requests in parallel.
      *
      * @param BatchRequest $requests
-     * @return ResponseInterface[]
+     * @return BatchResults
      */
-    public function sendBatch(BatchRequest $requests): array;
+    public function sendBatch(BatchRequest $requests): BatchResults;
 
-    /**
-     * Attach a subscriber that gets notified of requests.
-     *
-     * @param SubscriberInterface $subscriber
-     */
-    public function attachSubscriber(SubscriberInterface $subscriber);
 }

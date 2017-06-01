@@ -3,8 +3,8 @@
 namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
+use Assertis\Http\Response\BatchResults;
 use Exception;
-use GuzzleHttp\BatchResults;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
@@ -16,7 +16,7 @@ class BatchRequestFailureException extends Exception
      */
     private $batchRequest;
     /**
-     * @var BatchResults
+     * @var array
      */
     private $batchResults;
 
@@ -46,9 +46,9 @@ class BatchRequestFailureException extends Exception
     }
 
     /**
-     * @return BatchResults
+     * @return array
      */
-    public function getBatchResults(): BatchResults
+    public function getBatchResults(): array
     {
         return $this->batchResults;
     }
