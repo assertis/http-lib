@@ -5,7 +5,8 @@ namespace Assertis\Http\Client;
 use Assertis\Http\Request\CachedBatchRequest;
 use Assertis\Http\Request\CachedRequest;
 use GuzzleHttp\Client as GuzzleClient;
-use Memcache;
+use Memcached;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Caching implementation for http client for nrs service.
@@ -15,15 +16,15 @@ use Memcache;
 class ClientCached extends Client
 {
     /**
-     * @var Memcache
+     * @var Memcached
      */
     private $memcache;
 
     /**
      * @param GuzzleClient $http
-     * @param Memcache $memcache
+     * @param Memcached $memcache
      */
-    public function __construct(GuzzleClient $http, Memcache $memcache)
+    public function __construct(GuzzleClient $http, Memcached $memcache)
     {
         parent::__construct($http);
         $this->memcache = $memcache;
@@ -37,15 +38,17 @@ class ClientCached extends Client
      */
     public function sendCached(CachedRequest $request)
     {
-        $cached = $this->memcache->get($request->getCacheKey());
+        $k = $request->getCacheKey();
+        $cached = $this->memcache->get($k);
         if (false !== $cached) {
             return $cached;
         }
 
         $response = $this->send($request);
-        $this->memcache->set($request->getCacheKey(), (string)$response->getBody(), 0, $request->getCacheFor());
+        $body = $response->getBody()->getContents();
+        $this->memcache->set($request->getCacheKey(), $body, 0);
 
-        return $response->getBody();
+        return $body;
     }
 
     /**
@@ -64,11 +67,12 @@ class ClientCached extends Client
         $responses = $this->sendBatch($batchRequest);
         $out = [];
 
+        /* @var ResponseInterface $response */
         foreach ($responses as $response) {
-            $out[] = is_object($response) ? (string)$response->getBody() : null;
+            $out[] = is_object($response) ? (string)$response->getBody()->getContents() : null;
         }
 
-        $this->memcache->set($batchRequest->getCacheKey(), serialize($out), 0, $batchRequest->getCacheFor());
+        $this->memcache->set($batchRequest->getCacheKey(), serialize($out));
 
         return $out;
     }

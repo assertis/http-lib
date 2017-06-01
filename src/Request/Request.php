@@ -15,6 +15,7 @@ class Request
     const POST = 'POST';
     const GET = 'GET';
     const PUT = 'PUT';
+    const DELETE = 'DELETE';
 
     const DEFAULT_TYPE = self::POST;
 
@@ -114,7 +115,7 @@ class Request
      */
     public function getQuery()
     {
-        return $this->query;
+        return http_build_query($this->query);
     }
 
     /**

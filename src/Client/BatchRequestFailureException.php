@@ -4,7 +4,6 @@ namespace Assertis\Http\Client;
 
 use Assertis\Http\Request\BatchRequest;
 use Exception;
-use GuzzleHttp\BatchResults;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
@@ -16,20 +15,17 @@ class BatchRequestFailureException extends Exception
      */
     private $batchRequest;
     /**
-     * @var BatchResults
+     * @var array
      */
     private $batchResults;
 
     /**
      * @param BatchRequest $batchRequest
-     * @param BatchResults $batchResults
+     * @param array $batchResults
      */
-    public function __construct(BatchRequest $batchRequest, BatchResults $batchResults)
+    public function __construct(BatchRequest $batchRequest, array $batchResults)
     {
-        $message = sprintf(
-            'Encountered %d failures while performing a batch request.',
-            count($batchResults->getFailures())
-        );
+        $message = 'Encountered failures while performing a batch request.';
         
         parent::__construct($message);
         
@@ -46,9 +42,9 @@ class BatchRequestFailureException extends Exception
     }
 
     /**
-     * @return BatchResults
+     * @return array
      */
-    public function getBatchResults(): BatchResults
+    public function getBatchResults(): array
     {
         return $this->batchResults;
     }

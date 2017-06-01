@@ -5,10 +5,10 @@ namespace Assertis\Tests\Http;
 use Assertis\Http\Client\Client;
 use Assertis\Http\Request\Request;
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Message\RequestInterface;
-use GuzzleHttp\Message\ResponseInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author loki
@@ -37,15 +37,14 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
     public function testShouldCreateRequest()
     {
-        $request = new Request('/', self::BODY);
+        $request = new Request('endpoint', self::BODY);
         $createdRequest = $this->client->createRequest($request);
-        $this->assertEquals(self::BODY, $createdRequest->getBody());
-        $this->assertEquals('', urldecode((string)$createdRequest->getQuery()));
-        $this->assertEquals(80, $createdRequest->getPort());
-        $this->assertEquals('http', $createdRequest->getScheme());
-        $this->assertEquals('test', $createdRequest->getHost());
+        $this->assertEquals(self::BODY, $createdRequest->getBody()->getContents());
+        $this->assertEquals('', urldecode((string)$createdRequest->getUri()->getQuery()));
+        $this->assertEquals('http', $createdRequest->getUri()->getScheme());
+        $this->assertEquals('test', $createdRequest->getUri()->getHost());
         $this->assertEquals('POST', $createdRequest->getMethod());
-        $this->assertEquals('/', $createdRequest->getPath());
+        $this->assertEquals('/endpoint', $createdRequest->getUri()->getPath());
     }
 
     public function testShouldCreateRequestWithQuery()
@@ -59,32 +58,29 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $request = new Request("/", '', $query);
         $createdRequest = $this->client->createRequest($request);
         $this->assertEquals('', $createdRequest->getBody());
-        $this->assertEquals('foo=bar&test[x]=y', urldecode((string)$createdRequest->getQuery()));
-        $this->assertEquals(80, $createdRequest->getPort());
-        $this->assertEquals('http', $createdRequest->getScheme());
-        $this->assertEquals('test', $createdRequest->getHost());
+        $this->assertEquals('foo=bar&test[x]=y', urldecode((string)$createdRequest->getUri()->getQuery()));
+        $this->assertEquals('http', $createdRequest->getUri()->getScheme());
+        $this->assertEquals('test', $createdRequest->getUri()->getHost());
         $this->assertEquals('POST', $createdRequest->getMethod());
-        $this->assertEquals('/', $createdRequest->getPath());
+        $this->assertEquals('/', $createdRequest->getUri()->getPath());
     }
 
     public function testSendShouldCreateRequestAndSendIt()
     {
-        /** @var RequestInterface|PHPUnit_Framework_MockObject_MockObject $httpRequest */
-        $httpRequest = $this->getMockBuilder(RequestInterface::class)->getMock();
-
         /** @var GuzzleClient|PHPUnit_Framework_MockObject_MockObject $httpClient */
         $httpClient = $this->getMockBuilder(GuzzleClient::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $httpClient->expects($this->once())
-            ->method('createRequest')
-            ->willReturn($httpRequest);
-
-        $httpClient->expects($this->once())
             ->method('send')
             ->with($this->isInstanceOf(RequestInterface::class))
             ->willReturn($this->getMockForAbstractClass(ResponseInterface::class));
+
+        $httpClient
+            ->method('getConfig')
+            ->with('base_url')
+            ->willReturn("http://test");
 
         $request = new Request('/', self::BODY);
         $client = new Client($httpClient);
