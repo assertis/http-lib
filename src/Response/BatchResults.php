@@ -102,8 +102,8 @@ class BatchResults implements Countable, IteratorAggregate, ArrayAccess
     public function getIterator()
     {
         $results = [];
-        foreach ($this->hash as $key) {
-            $results[] = $this->hash[$key];
+        foreach ($this->hash as $key=>$obj) {
+            $results[] = $obj;
         }
 
         return new ArrayIterator($results);
