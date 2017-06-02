@@ -37,4 +37,9 @@ interface ClientInterface
      */
     public function sendBatch(BatchRequest $requests): BatchResults;
 
+    /**
+     * @return \GuzzleHttp\ClientInterface
+     */
+    public function getGuzzleClient(): \GuzzleHttp\ClientInterface;
+
 }

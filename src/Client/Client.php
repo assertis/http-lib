@@ -45,7 +45,7 @@ class Client implements ClientInterface
         $body = $request->getBody();
         $headers = $request->getHeaders();
         $query = empty($request->getQuery()) ? "" : "?".http_build_query($request->getQuery());
-        $rawBaseUrl = $this->guzzleClient->getConfig("base_url");
+        $rawBaseUrl = (string)$this->guzzleClient->getConfig("base_uri");
         if(empty($rawBaseUrl)){
             throw new RuntimeException("Base url is not provided!");
         }
@@ -98,7 +98,7 @@ class Client implements ClientInterface
     /**
      * @return GuzzleClientInterface
      */
-    public function getGuzzleClient()
+    public function getGuzzleClient(): GuzzleClientInterface
     {
         return $this->guzzleClient;
     }
