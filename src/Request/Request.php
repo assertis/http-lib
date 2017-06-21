@@ -2,6 +2,8 @@
 
 namespace Assertis\Http\Request;
 
+use GuzzleHttp\Psr7\Uri;
+
 /**
  * Interface for http requests
  *
@@ -25,6 +27,13 @@ class Request
      * @var string
      */
     private $url;
+
+    /**
+     * Url wrapped into PSR7 Uri object
+     *
+     * @var Uri
+     */
+    private $psr7url;
 
     /**
      * Body of request to send
@@ -66,6 +75,7 @@ class Request
     public function __construct($url, $body = '', array $query = [], $type = self::DEFAULT_TYPE, $headers = [])
     {
         $this->url = $url;
+        $this->psr7url = new Uri($this->url);
         $this->body = $body;
         $this->query = $query;
         $this->type = $type;
@@ -108,6 +118,16 @@ class Request
     public function getUrl()
     {
         return $this->url;
+    }
+
+    /**
+     * @return bool
+     *  true - when $this->getUri() like http://host.com/resource
+     *  false - when $this->getUri() like /resource/XYZ
+     */
+    public function hasFullUrl(): bool
+    {
+        return !empty($this->psr7url->getHost()) && !empty($this->psr7url->getScheme());
     }
 
     /**

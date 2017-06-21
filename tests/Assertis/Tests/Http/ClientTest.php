@@ -47,6 +47,18 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('/endpoint', $createdRequest->getUri()->getPath());
     }
 
+    public function testShouldCreateRequestWithFullUrlInRequest()
+    {
+        $request = new Request('http://sample.com/endpoint', '', [], Request::GET);
+        $createdRequest = $this->client->createRequest($request);
+        $this->assertEquals('', $createdRequest->getBody()->getContents());
+        $this->assertEquals('', urldecode((string)$createdRequest->getUri()->getQuery()));
+        $this->assertEquals('http', $createdRequest->getUri()->getScheme());
+        $this->assertEquals('sample.com', $createdRequest->getUri()->getHost());
+        $this->assertEquals('GET', $createdRequest->getMethod());
+        $this->assertEquals('/endpoint', $createdRequest->getUri()->getPath());
+    }
+
     public function testShouldCreateRequestWithQuery()
     {
         $query = [
