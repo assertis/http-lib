@@ -49,6 +49,10 @@ class Client implements ClientInterface
         return new GuzzleRequest($request->getType(), $uri, $headers, $body);
     }
 
+    /**
+     * @param Request $request
+     * @return Uri
+     */
     public function createUri(Request $request): Uri
     {
         $query = empty($request->getQuery()) ? "" : "?" . http_build_query($request->getQuery());
