@@ -35,6 +35,7 @@ class ClientFactory
      * @param int $requestTimeout
      * @param array $auth
      * @param string|null $tenant
+     * @param callable $handler
      * @return ClientInterface
      */
     public function getClient(
@@ -44,10 +45,12 @@ class ClientFactory
         $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT,
         $requestTimeout = self::DEFAULT_REQUEST_TIMEOUT,
         array $auth = null,
-        $tenant = null
+        $tenant = null,
+        callable $handler = null
     ) {
         $params = [
-            'base_url' => $baseUrl,
+            'base_uri' => $baseUrl,
+            'handler' => $handler,
             'defaults' => [
                 'headers'         => [
                     'content-type' => $contentType,
