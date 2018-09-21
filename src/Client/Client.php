@@ -38,7 +38,7 @@ class Client implements ClientInterface
      */
     public function __construct(
         GuzzleClientInterface $http,
-        ?string $name
+        ?string $name = null
     ) {
         $this->guzzleClient = $http;
         $this->name = $name;
