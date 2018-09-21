@@ -30,11 +30,18 @@ class Client implements ClientInterface
     protected $guzzleClient;
 
     /**
+     * @var null|string
+     */
+    protected $name;
+    /**
      * @param GuzzleClientInterface $http
      */
-    public function __construct(GuzzleClientInterface $http)
-    {
+    public function __construct(
+        GuzzleClientInterface $http,
+        ?string $name = null
+    ) {
         $this->guzzleClient = $http;
+        $this->name = $name;
     }
 
     /**
@@ -114,6 +121,11 @@ class Client implements ClientInterface
     public function getGuzzleClient(): GuzzleClientInterface
     {
         return $this->guzzleClient;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
     }
 
 }
