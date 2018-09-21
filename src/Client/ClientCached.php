@@ -24,9 +24,9 @@ class ClientCached extends Client
      * @param GuzzleClient $http
      * @param Memcached $memcache
      */
-    public function __construct(GuzzleClient $http, Memcached $memcache)
+    public function __construct(GuzzleClient $http, Memcached $memcache, ?string $name = null)
     {
-        parent::__construct($http);
+        parent::__construct($http, $name);
         $this->memcache = $memcache;
     }
 
