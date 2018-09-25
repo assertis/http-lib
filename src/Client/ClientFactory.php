@@ -61,7 +61,7 @@ class ClientFactory
         ];
 
         if ($auth) {
-            $params['defaults']['auth'] = $auth;
+            $params['defaults']['auth'] = $params['auth'] = $auth;
         }
         
         if ($tenant) {
