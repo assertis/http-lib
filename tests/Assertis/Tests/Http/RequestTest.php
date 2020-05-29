@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Assertis\Tests\Http;
 
 use Assertis\Http\Request\Request;
+use Generator;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -58,5 +61,74 @@ class RequestTest extends PHPUnit_Framework_TestCase
     {
         $request = new Request($url, '', []);
         $this->assertEquals($expected, $request->hasFullUrl());
+    }
+
+    public function staticFactoryMethodsDataProvider(): Generator
+    {
+        $url = '/some/url';
+        $body = '{}';
+        $query = ['query' => 'parameter'];
+        $headers = ['some' => 'header'];
+
+        yield [
+            'get',
+            [$url, $query, $headers],
+            Request::GET,
+            $url,
+            '',
+            $query,
+            $headers
+        ];
+
+        yield [
+            'delete',
+            [$url, $query, $headers],
+            Request::DELETE,
+            $url,
+            '',
+            $query,
+            $headers
+        ];
+
+        yield [
+            'post',
+            [$url, $body, $query, $headers],
+            Request::POST,
+            $url,
+            $body,
+            $query,
+            $headers
+        ];
+
+        yield [
+            'put',
+            [$url, $body, $query, $headers],
+            Request::PUT,
+            $url,
+            $body,
+            $query,
+            $headers
+        ];
+    }
+
+    /**
+     * @dataProvider staticFactoryMethodsDataProvider
+     */
+    public function testStaticFactoryMethods(
+        string $method,
+        array $params,
+        string $expectedType,
+        string $expectedUrl,
+        string $expectedBody,
+        array $expectedQuery,
+        array $expectedHeaders
+    ) {
+        $request = Request::$method(...$params);
+
+        $this->assertEquals($expectedType, $request->getType());
+        $this->assertEquals($expectedUrl, $request->getUrl());
+        $this->assertEquals($expectedBody, $request->getBody());
+        $this->assertEquals($expectedQuery, $request->getQuery());
+        $this->assertEquals($expectedHeaders, $request->getHeaders());
     }
 }

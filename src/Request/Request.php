@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Assertis\Http\Request;
 
 use GuzzleHttp\Psr7\Uri;
@@ -80,6 +82,26 @@ class Request
         $this->query = $query;
         $this->type = $type;
         $this->headers = $headers;
+    }
+
+    public static function get(string $url, array $query = [], array $headers = []): self
+    {
+        return new self($url, '', $query, self::GET, $headers);
+    }
+
+    public static function post(string $url, string $body = '', array $query = [], array $headers = []): self
+    {
+        return new self($url, $body, $query, self::POST, $headers);
+    }
+
+    public static function put(string $url, string $body = '', array $query = [], array $headers = []): self
+    {
+        return new self($url, $body, $query, self::PUT, $headers);
+    }
+
+    public static function delete(string $url, array $query = [], array $headers = []): self
+    {
+        return new self($url, '', $query, self::DELETE, $headers);
     }
 
     /**
